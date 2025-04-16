@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"reflect"
 	"strings"
+	"sync"
 )
 
 // DecodeErrors is a map of errors encountered during form decoding
@@ -42,3 +43,15 @@ func (e *InvalidDecoderError) Error() string {
 
 // DecodeCustomTypeFunc allows for registering/overriding types to be parsed.
 type DecodeCustomTypeFunc func([]string) (interface{}, error)
+
+// Decoder is the main decode instance
+type Decoder struct {
+	mode            Mode
+	tagName         string
+	dataPool        *sync.Pool
+	structCache     *structCacheMap
+	maxArraySize    int
+	namespacePrefix string
+	namespaceSuffix string
+	customTypeFuncs map[reflect.Type]DecodeCustomTypeFunc
+}
