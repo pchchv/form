@@ -20,3 +20,7 @@ func (s cacheFields) Less(i, j int) bool {
 func (s cacheFields) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
+
+type cachedStruct struct {
+	fields cacheFields
+}
