@@ -45,3 +45,19 @@ type structCacheMap struct {
 	lock  sync.Mutex
 	tagFn TagNameFunc
 }
+
+func (s *structCacheMap) Get(key reflect.Type) (value *cachedStruct, ok bool) {
+	value, ok = s.m.Load().(map[reflect.Type]*cachedStruct)[key]
+	return
+}
+
+func (s *structCacheMap) Set(key reflect.Type, value *cachedStruct) {
+	m := s.m.Load().(map[reflect.Type]*cachedStruct)
+	nm := make(map[reflect.Type]*cachedStruct, len(m)+1)
+	for k, v := range m {
+		nm[k] = v
+	}
+
+	nm[key] = value
+	s.m.Store(nm)
+}
