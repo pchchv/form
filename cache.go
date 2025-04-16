@@ -41,6 +41,7 @@ func newStructCacheMap() *structCacheMap {
 }
 
 type structCacheMap struct {
-	m    atomic.Value // map[reflect.Type]*cachedStruct
-	lock sync.Mutex
+	m     atomic.Value // map[reflect.Type]*cachedStruct
+	lock  sync.Mutex
+	tagFn TagNameFunc
 }
