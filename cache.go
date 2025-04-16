@@ -6,3 +6,5 @@ type cachedField struct {
 	isAnonymous bool
 	isOmitEmpty bool
 }
+
+type cacheFields []cachedField
