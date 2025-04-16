@@ -2,6 +2,7 @@ package form
 
 import (
 	"bytes"
+	"reflect"
 	"strings"
 )
 
@@ -19,4 +20,22 @@ func (d DecodeErrors) Error() string {
 	}
 
 	return strings.TrimSpace(buff.String())
+}
+
+// InvalidDecoderError describes an invalid argument passed to Decode.
+// Argument passed to Decode must be a non-nil pointer.
+type InvalidDecoderError struct {
+	Type reflect.Type
+}
+
+func (e *InvalidDecoderError) Error() string {
+	if e.Type == nil {
+		return "form: Decode(nil)"
+	}
+
+	if e.Type.Kind() != reflect.Ptr {
+		return "form: Decode(non-pointer " + e.Type.String() + ")"
+	}
+
+	return "form: Decode(nil " + e.Type.String() + ")"
 }
