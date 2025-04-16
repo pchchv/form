@@ -1,5 +1,10 @@
 package form
 
+import (
+	"sync"
+	"sync/atomic"
+)
+
 type cachedField struct {
 	idx         int
 	name        string
@@ -23,4 +28,9 @@ func (s cacheFields) Swap(i, j int) {
 
 type cachedStruct struct {
 	fields cacheFields
+}
+
+type structCacheMap struct {
+	m    atomic.Value // map[reflect.Type]*cachedStruct
+	lock sync.Mutex
 }
