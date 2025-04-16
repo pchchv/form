@@ -39,3 +39,6 @@ func (e *InvalidDecoderError) Error() string {
 
 	return "form: Decode(nil " + e.Type.String() + ")"
 }
+
+// DecodeCustomTypeFunc allows for registering/overriding types to be parsed.
+type DecodeCustomTypeFunc func([]string) (interface{}, error)
