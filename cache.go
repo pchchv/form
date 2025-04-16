@@ -1,6 +1,7 @@
 package form
 
 import (
+	"reflect"
 	"sync"
 	"sync/atomic"
 )
@@ -28,6 +29,15 @@ func (s cacheFields) Swap(i, j int) {
 
 type cachedStruct struct {
 	fields cacheFields
+}
+
+// TagNameFunc allows for adding of a custom tag name parser
+type TagNameFunc func(field reflect.StructField) string
+
+func newStructCacheMap() *structCacheMap {
+	sc := new(structCacheMap)
+	sc.m.Store(make(map[reflect.Type]*cachedStruct))
+	return sc
 }
 
 type structCacheMap struct {
