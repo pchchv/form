@@ -55,3 +55,24 @@ type Decoder struct {
 	namespaceSuffix string
 	customTypeFuncs map[reflect.Type]DecodeCustomTypeFunc
 }
+
+// SetMode sets the mode the decoder should run Default is ModeImplicit
+func (d *Decoder) SetMode(mode Mode) {
+	d.mode = mode
+}
+
+// SetTagName sets the given tag name to be used by the decoder.
+//
+// Default is "form".
+func (d *Decoder) SetTagName(tagName string) {
+	d.tagName = tagName
+}
+
+// SetMaxArraySize sets maximum array size that can be created.
+// This limit is for the array indexing this library supports to
+// avoid potential DOS or man-in-the-middle attacks using an unusually high number.
+//
+// Default is 10000.
+func (d *Decoder) SetMaxArraySize(size uint) {
+	d.maxArraySize = int(size)
+}
