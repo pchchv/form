@@ -76,3 +76,13 @@ func (d *Decoder) SetTagName(tagName string) {
 func (d *Decoder) SetMaxArraySize(size uint) {
 	d.maxArraySize = int(size)
 }
+
+// SetNamespacePrefix sets a struct namespace prefix.
+func (d *Decoder) SetNamespacePrefix(namespacePrefix string) {
+	d.namespacePrefix = namespacePrefix
+}
+
+// SetNamespaceSuffix sets a struct namespace suffix.
+func (d *Decoder) SetNamespaceSuffix(namespaceSuffix string) {
+	d.namespaceSuffix = namespaceSuffix
+}
