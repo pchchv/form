@@ -632,3 +632,38 @@ func (d *decoder) setFieldByType(current reflect.Value, namespace []byte, idx in
 
 	return
 }
+
+func (d *decoder) traverseStruct(v reflect.Value, typ reflect.Type, namespace []byte) (set bool) {
+	l := len(namespace)
+	first := l == 0
+	// anonymous structs will still work for caching,
+	// since the entire definition is stored,
+	// including tags
+	s, ok := d.d.structCache.Get(typ)
+	if !ok {
+		s = d.d.structCache.parseStruct(d.d.mode, v, typ, d.d.tagName)
+	}
+
+	for _, f := range s.fields {
+		namespace = namespace[:l]
+		if f.isAnonymous {
+			if d.setFieldByType(v.Field(f.idx), namespace, 0) {
+				set = true
+			}
+		}
+
+		if first {
+			namespace = append(namespace, f.name...)
+		} else {
+			namespace = append(namespace, d.d.namespacePrefix...)
+			namespace = append(namespace, f.name...)
+			namespace = append(namespace, d.d.namespaceSuffix...)
+		}
+
+		if d.setFieldByType(v.Field(f.idx), namespace, 0) {
+			set = true
+		}
+	}
+
+	return
+}
