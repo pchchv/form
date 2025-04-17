@@ -98,3 +98,5 @@ type recursiveData struct {
 	alias    string
 	sliceLen int
 }
+
+type dataMap []*recursiveData
