@@ -1,6 +1,29 @@
 package form
 
-import "strconv"
+import (
+	"reflect"
+	"strconv"
+)
+
+// ExtractType gets the actual underlying type of field value.
+func ExtractType(current reflect.Value) (reflect.Value, reflect.Kind) {
+	switch current.Kind() {
+	case reflect.Ptr:
+		if current.IsNil() {
+			return current, reflect.Ptr
+		} else {
+			return ExtractType(current.Elem())
+		}
+	case reflect.Interface:
+		if current.IsNil() {
+			return current, reflect.Interface
+		} else {
+			return ExtractType(current.Elem())
+		}
+	default:
+		return current, current.Kind()
+	}
+}
 
 func parseBool(str string) (bool, error) {
 	switch str {
