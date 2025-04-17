@@ -2,6 +2,7 @@ package form
 
 import (
 	"bytes"
+	"net/url"
 	"reflect"
 	"strings"
 	"sync"
@@ -133,6 +134,35 @@ func (d *Decoder) Decode(v interface{}, values url.Values) (err error) {
 
 	d.dataPool.Put(dec)
 	return
+}
+
+// RegisterCustomTypeFunc registers a CustomTypeFunc against a number of types.
+//
+// NOTE: This method is not thread-safe it is intended that these all be registered prior to any parsing.
+//
+// ADDITIONAL: if a struct type is registered,
+// the function will only be called if a url.Value exists for the struct and not just the struct fields eg.
+// url.Values{"User":"Name%3Djack"} will call the custom type function with `User` as the type,
+// however url.Values{"User.Name":"jack"} will not.
+func (d *Decoder) RegisterCustomTypeFunc(fn DecodeCustomTypeFunc, types ...interface{}) {
+	if d.customTypeFuncs == nil {
+		d.customTypeFuncs = map[reflect.Type]DecodeCustomTypeFunc{}
+	}
+
+	for _, t := range types {
+		d.customTypeFuncs[reflect.TypeOf(t)] = fn
+	}
+}
+
+// RegisterTagNameFunc registers a custom tag name parser function
+//
+// NOTE: This method is not thread-safe it is intended that these all be registered prior to any parsing.
+//
+// ADDITIONAL: once a custom function has been registered the default,
+// or custom set, tag name is ignored and relies 100% on the function for the name data.
+// The return value WILL BE CACHED and so return value must be consistent.
+func (d *Decoder) RegisterTagNameFunc(fn TagNameFunc) {
+	d.structCache.tagFn = fn
 }
 
 type key struct {
