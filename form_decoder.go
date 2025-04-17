@@ -107,6 +107,34 @@ func (d *Decoder) SetNamespaceSuffix(namespaceSuffix string) {
 	d.namespaceSuffix = namespaceSuffix
 }
 
+// Decode parses the given values and sets the corresponding struct and/or type values.
+// Decode returns an InvalidDecoderError if interface passed is invalid.
+func (d *Decoder) Decode(v interface{}, values url.Values) (err error) {
+	val := reflect.ValueOf(v)
+	if val.Kind() != reflect.Ptr || val.IsNil() {
+		return &InvalidDecoderError{reflect.TypeOf(v)}
+	}
+
+	dec := d.dataPool.Get().(*decoder)
+	dec.values = values
+	dec.dm = dec.dm[0:0]
+	val = val.Elem()
+	typ := val.Type()
+	if val.Kind() == reflect.Struct && typ != timeType {
+		dec.traverseStruct(val, typ, dec.namespace[0:0])
+	} else {
+		dec.setFieldByType(val, dec.namespace[0:0], 0)
+	}
+
+	if len(dec.errs) > 0 {
+		err = dec.errs
+		dec.errs = nil
+	}
+
+	d.dataPool.Put(dec)
+	return
+}
+
 type key struct {
 	value       string
 	ivalue      int
