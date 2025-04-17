@@ -86,3 +86,9 @@ func (d *Decoder) SetNamespacePrefix(namespacePrefix string) {
 func (d *Decoder) SetNamespaceSuffix(namespaceSuffix string) {
 	d.namespaceSuffix = namespaceSuffix
 }
+
+type key struct {
+	ivalue      int
+	value       string
+	searchValue string
+}
