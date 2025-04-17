@@ -56,6 +56,26 @@ type Decoder struct {
 	customTypeFuncs map[reflect.Type]DecodeCustomTypeFunc
 }
 
+// NewDecoder creates a new decoder instance with sane defaults
+func NewDecoder() *Decoder {
+	d := &Decoder{
+		tagName:         "form",
+		mode:            ModeImplicit,
+		structCache:     newStructCacheMap(),
+		maxArraySize:    10000,
+		namespacePrefix: ".",
+	}
+
+	d.dataPool = &sync.Pool{New: func() interface{} {
+		return &decoder{
+			d:         d,
+			namespace: make([]byte, 0, 64),
+		}
+	}}
+
+	return d
+}
+
 // SetMode sets the mode the decoder should run Default is ModeImplicit
 func (d *Decoder) SetMode(mode Mode) {
 	d.mode = mode
