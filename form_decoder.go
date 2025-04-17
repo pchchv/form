@@ -88,7 +88,13 @@ func (d *Decoder) SetNamespaceSuffix(namespaceSuffix string) {
 }
 
 type key struct {
-	ivalue      int
 	value       string
+	ivalue      int
 	searchValue string
+}
+
+type recursiveData struct {
+	keys     []key
+	alias    string
+	sliceLen int
 }
