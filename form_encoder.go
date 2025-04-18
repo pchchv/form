@@ -50,3 +50,18 @@ type Encoder struct {
 	namespaceSuffix string
 	customTypeFuncs map[reflect.Type]EncodeCustomTypeFunc
 }
+
+// SetAnonymousMode sets the mode the encoder should run Default is AnonymousEmbed.
+func (e *Encoder) SetAnonymousMode(mode AnonymousMode) {
+	e.embedAnonymous = mode == AnonymousEmbed
+}
+
+// SetNamespacePrefix sets a struct namespace prefix.
+func (e *Encoder) SetNamespacePrefix(namespacePrefix string) {
+	e.namespacePrefix = namespacePrefix
+}
+
+// SetNamespaceSuffix sets a struct namespace suffix.
+func (e *Encoder) SetNamespaceSuffix(namespaceSuffix string) {
+	e.namespaceSuffix = namespaceSuffix
+}
