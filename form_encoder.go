@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"reflect"
 	"strings"
+	"sync"
 )
 
 // EncodeErrors is a map of errors encountered during form encoding.
@@ -37,3 +38,15 @@ func (e *InvalidEncodeError) Error() string {
 
 // EncodeCustomTypeFunc allows for registering/overriding types to be parsed.
 type EncodeCustomTypeFunc func(x interface{}) ([]string, error)
+
+// Encoder is the main encode instance.
+type Encoder struct {
+	mode            Mode
+	tagName         string
+	dataPool        *sync.Pool
+	structCache     *structCacheMap
+	embedAnonymous  bool
+	namespacePrefix string
+	namespaceSuffix string
+	customTypeFuncs map[reflect.Type]EncodeCustomTypeFunc
+}
