@@ -65,3 +65,15 @@ func (e *Encoder) SetNamespacePrefix(namespacePrefix string) {
 func (e *Encoder) SetNamespaceSuffix(namespaceSuffix string) {
 	e.namespaceSuffix = namespaceSuffix
 }
+
+// SetTagName sets the given tag name to be used by the encoder.
+// Default is "form"
+func (e *Encoder) SetTagName(tagName string) {
+	e.tagName = tagName
+}
+
+// SetMode sets the mode the encoder should run.
+// Default is ModeImplicit.
+func (e *Encoder) SetMode(mode Mode) {
+	e.mode = mode
+}
