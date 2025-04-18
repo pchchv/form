@@ -34,3 +34,6 @@ func (e *InvalidEncodeError) Error() string {
 
 	return "form: Encode(nil " + e.Type.String() + ")"
 }
+
+// EncodeCustomTypeFunc allows for registering/overriding types to be parsed.
+type EncodeCustomTypeFunc func(x interface{}) ([]string, error)
