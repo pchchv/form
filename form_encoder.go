@@ -2,6 +2,7 @@ package form
 
 import (
 	"bytes"
+	"net/url"
 	"reflect"
 	"strings"
 	"sync"
@@ -50,6 +51,27 @@ type Encoder struct {
 	namespaceSuffix string
 	customTypeFuncs map[reflect.Type]EncodeCustomTypeFunc
 }
+
+// // NewEncoder creates a new encoder instance with sane defaults
+// func NewEncoder() *Encoder {
+
+// 	e := &Encoder{
+// 		tagName:         "form",
+// 		mode:            ModeImplicit,
+// 		structCache:     newStructCacheMap(),
+// 		embedAnonymous:  true,
+// 		namespacePrefix: ".",
+// 	}
+
+// 	e.dataPool = &sync.Pool{New: func() interface{} {
+// 		return &encoder{
+// 			e:         e,
+// 			namespace: make([]byte, 0, 64),
+// 		}
+// 	}}
+
+// 	return e
+// }
 
 // SetAnonymousMode sets the mode the encoder should run Default is AnonymousEmbed.
 func (e *Encoder) SetAnonymousMode(mode AnonymousMode) {
@@ -100,4 +122,29 @@ func (e *Encoder) RegisterCustomTypeFunc(fn EncodeCustomTypeFunc, types ...inter
 // Returns value WILL BE CACHED and so return value must be consistent.
 func (e *Encoder) RegisterTagNameFunc(fn TagNameFunc) {
 	e.structCache.tagFn = fn
+}
+
+// Encode encodes the given values and sets the corresponding struct values.
+func (e *Encoder) Encode(v interface{}) (values url.Values, err error) {
+	val, kind := ExtractType(reflect.ValueOf(v))
+	if kind == reflect.Ptr || kind == reflect.Interface || kind == reflect.Invalid {
+		return nil, &InvalidEncodeError{reflect.TypeOf(v)}
+	}
+
+	enc := e.dataPool.Get().(*encoder)
+	enc.values = make(url.Values)
+	if kind == reflect.Struct && val.Type() != timeType {
+		enc.traverseStruct(val, enc.namespace[0:0], -1)
+	} else {
+		enc.setFieldByType(val, enc.namespace[0:0], -1, false)
+	}
+
+	if len(enc.errs) > 0 {
+		err = enc.errs
+		enc.errs = nil
+	}
+
+	values = enc.values
+	e.dataPool.Put(enc)
+	return
 }
