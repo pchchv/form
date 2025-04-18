@@ -2,10 +2,11 @@ package form
 
 import (
 	"bytes"
+	"reflect"
 	"strings"
 )
 
-// EncodeErrors is a map of errors encountered during form encoding
+// EncodeErrors is a map of errors encountered during form encoding.
 type EncodeErrors map[string]error
 
 func (e EncodeErrors) Error() string {
@@ -19,4 +20,17 @@ func (e EncodeErrors) Error() string {
 	}
 
 	return strings.TrimSpace(buff.String())
+}
+
+// InvalidEncodeError describes an invalid argument passed to Encode.
+type InvalidEncodeError struct {
+	Type reflect.Type
+}
+
+func (e *InvalidEncodeError) Error() string {
+	if e.Type == nil {
+		return "form: Encode(nil)"
+	}
+
+	return "form: Encode(nil " + e.Type.String() + ")"
 }
