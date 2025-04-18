@@ -52,6 +52,26 @@ type Encoder struct {
 	customTypeFuncs map[reflect.Type]EncodeCustomTypeFunc
 }
 
+// NewEncoder creates a new encoder instance with sane defaults.
+func NewEncoder() *Encoder {
+	e := &Encoder{
+		tagName:         "form",
+		mode:            ModeImplicit,
+		structCache:     newStructCacheMap(),
+		embedAnonymous:  true,
+		namespacePrefix: ".",
+	}
+
+	e.dataPool = &sync.Pool{New: func() interface{} {
+		return &encoder{
+			e:         e,
+			namespace: make([]byte, 0, 64),
+		}
+	}}
+
+	return e
+}
+
 // SetAnonymousMode sets the mode the encoder should run Default is AnonymousEmbed.
 func (e *Encoder) SetAnonymousMode(mode AnonymousMode) {
 	e.embedAnonymous = mode == AnonymousEmbed
