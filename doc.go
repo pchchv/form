@@ -120,16 +120,11 @@ example decoding the above HTML
 	var decoder *form.Decoder
 
 	func main() {
-	    decoder = form.NewDecoder()
-
-	    // this simulates the results of http.Request's ParseForm() function
-	    values := parseForm()
-
 	    var user User
-
+        decoder = form.NewDecoder()
+	    values := parseForm() // this simulates the results of http.Request's ParseForm() function
 	    // must pass a pointer
-	    err := decoder.Decode(&user, values)
-	    if err != nil {
+	    if err := decoder.Decode(&user, values); err != nil {
 	        log.Panic(err)
 	    }
 
@@ -187,7 +182,6 @@ example encoding
 
 	func main() {
 	    encoder = form.NewEncoder()
-
 	    user := User{
 	        Name:   "joeybloggs",
 	        Age:    3,
