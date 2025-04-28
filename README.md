@@ -1,1 +1,1 @@
-# form
+# form [![CI](https://github.com/pchchv/form/workflows/CI/badge.svg)](https://github.com/pchchv/form/actions?query=workflow%3ACI+event%3Apush)
