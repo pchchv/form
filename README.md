@@ -1,1 +1,1 @@
-# form [![CI](https://github.com/pchchv/form/workflows/CI/badge.svg)](https://github.com/pchchv/form/actions?query=workflow%3ACI+event%3Apush)
+# form [![CI](https://github.com/pchchv/form/workflows/CI/badge.svg)](https://github.com/pchchv/form/actions?query=workflow%3ACI+event%3Apush) [![Go Report Card](https://goreportcard.com/badge/github.com/pchchv/form)](https://goreportcard.com/report/github.com/pchchv/form) [![Godoc Reference](https://pkg.go.dev/badge/github.com/pchchv/form)](https://pkg.go.dev/github.com/pchchv/form)
